@@ -5,8 +5,7 @@ This project marks my second attempt at solving the classic house price predicti
 ### The Goal
 The project predicts the final sale price of a home based on variables like square footage, build quality, location, and age. To make the model accessible, I deployed it as a web app where users can input house details and receive an instant price estimate.
 
-**[Live Demo: Click here to try the app](YOUR_STREAMLIT_LINK_HERE)**
-
+**[Live Demo: Click here to try the app]((https://house-price-advanced-regression-bhssn8ejs5dkhptewmhb4x.streamlit.app/))**
 ### What I Did Differently
 The biggest breakthrough came from realizing that the `SalePrice` was heavily right-skewed. Since most machine learning models perform better when data is normally distributed, I applied a **log transformation**. This simple shift made the distribution nearly normal and immediately boosted the performance of every model I tested.
 
