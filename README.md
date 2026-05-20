@@ -1,35 +1,82 @@
-# House Price Prediction: From Basic to Advanced
+## House Price Prediction — From Basic to Advanced
 
-This project marks my second attempt at solving the classic house price prediction problem. My first version was a basic implementation, but after diving deeper into **feature engineering**, **data distributions**, and **model selection**, I decided to rebuild it from scratch. This new approach led to a significant jump in accuracy and a much cleaner workflow.
+Live Demo: [Try the predictor here](https://house-price-advanced-regression-bhssn8ejs5dkhptewmhb4x.streamlit.app/)
 
-### The Goal
-The project predicts the final sale price of a home based on variables like square footage, build quality, location, and age. To make the model accessible, I deployed it as a web app where users can input house details and receive an instant price estimate.
+### Overview
 
-**[Live Demo: Click here to try the app](https://house-price-advanced-regression-bhssn8ejs5dkhptewmhb4x.streamlit.app/)**
-### What I Did Differently
-The biggest breakthrough came from realizing that the `SalePrice` was heavily right-skewed. Since most machine learning models perform better when data is normally distributed, I applied a **log transformation**. This simple shift made the distribution nearly normal and immediately boosted the performance of every model I tested.
+This is my second attempt at house price prediction. The first version was basic - just throw data into a model and hope. This time I focused on feature engineering and understanding why certain models work better than others.
 
-I also moved beyond the raw dataset by engineering several new features:
-* **Total Area:** A combined metric of basement and above-ground living space.
-* **Property Age:** Calculated by comparing the year built with the year the house was sold.
-* **Total Bathrooms:** A weighted combination of full and half baths.
-* **Ratios:** Created features like "rooms per square foot" to capture the efficiency of a home's layout.
+It turned out the simplest model won. That taught me something important.
 
-### Model Comparison & Results
-I compared three different models by measuring their **Root Mean Squared Error (RMSE)**. Surprisingly, the simplest model came out on top:
+### The Key Insight
+
+When I first explored the data, I noticed the sale prices were heavily skewed - most houses were cheap but a few were very expensive. Most machine learning models assume normally distributed data.
+
+I applied a log transformation to the target variable and suddenly everything made more sense. The relationship between features and price became linear.
+
+This is why I built the model this way, and why it works so well.
+
+### Feature Engineering
+
+Rather than using raw variables, I created features that actually mean something:
+
+- Total Area: Combines basement + above-ground space (more relevant than either alone)
+- Property Age: Year sold minus year built (recency matters)
+- Total Bathrooms: Weighted combination of full and half baths
+- Space Efficiency: Rooms per square foot (tells you about layout quality)
+- Quality Score: Interaction of building quality and condition
+
+These features capture the business logic of home value better than raw numbers.
+
+### Model Comparison
+
+I tested three approaches:
 
 | Model | RMSE |
-| :--- | :--- |
-| **Linear Regression** | **0.1267** |
+|-------|------|
+| Linear Regression | 0.1267 |
 | XGBoost | 0.1406 |
 | Random Forest | 0.1477 |
 
-While XGBoost and Random Forest are more powerful on paper, **Linear Regression** performed best here. By log-transforming the data, I made the relationship between the features and the target approximately linear.
+Linear Regression won. This surprised me at first - XGBoost and Random Forest are more "powerful" models. But they were overfitting.
 
-### Key Takeaways
-This project taught me that **feature engineering** is often more impactful than model complexity. By creating meaningful features like `HouseAge` and `TotalArea`, I provided the model with better signals than the raw data ever could.
+The lesson: after log transformation and good feature engineering, the relationship between features and price is largely linear. Complex models just fit noise.
 
-### Tech Stack
-* **Data & ML:** Python, Pandas, NumPy, Scikit-learn, XGBoost, Scipy
-* **Deployment:** Streamlit, Joblib
-* **Visualization:** Matplotlib
+### Technical Stack
+
+- Data Processing: Python, Pandas, NumPy
+- Machine Learning: Scikit-learn, XGBoost
+- Deployment: Streamlit
+- Visualization: Matplotlib
+
+### What I Did Differently
+
+Most house price projects skip feature engineering and jump to modeling. I spent time understanding the data first.
+
+I also didn't just optimize for accuracy. I looked at residuals to understand where the model failed. Some houses have weird characteristics that make them outliers - the model doesn't predict those well, and that's okay.
+
+### What I Learned
+
+Feature engineering beats model complexity, at least for this problem. You can't machine-learn your way out of bad features.
+
+Also learned that log transformation of skewed targets is really powerful. It's a simple technique that gets overlooked.
+
+Finally realized that the best model isn't always the most sophisticated. Simpler models are easier to explain, faster to run, and less likely to overfit.
+
+### Deployment
+
+The Streamlit app lets you adjust features (square footage, year built, quality) and see the predicted price in real-time. Useful for understanding how different factors affect value.
+
+### Limitations
+
+- Trained on house prices from a specific region (may not generalize)
+- Doesn't account for unique features like location-specific amenities
+- Model struggles with very old or very new houses (limited training data)
+- Market cycles affect prices (training data from one period may not work for another)
+
+### Future Improvements
+
+- Include location-based features (zip code, proximity to schools)
+- Add temporal features to account for market changes
+- Ensemble multiple models with different feature sets
+- Incorporate external data (school ratings, crime statistics)
